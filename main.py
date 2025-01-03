@@ -1,20 +1,20 @@
-def boxPacking(boxes):
-    # Step 1: Sort each box's dimensions in ascending order
-    boxes = [tuple(sorted(box)) for box in boxes]
-    
-    # Step 2: Sort the list of boxes based on the first dimension, then second, then third
-    boxes.sort()
+def can_pack(box1, box2):
+    # Check if box1 can fit inside box2 in all dimensions
+    return all(x <= y for x, y in zip(box1, box2))
 
-    # Step 3: Apply Longest Increasing Subsequence (LIS) on the sorted boxes
-    n = len(boxes)
-    dp = [1] * n  # Initialize dp array where dp[i] will store the length of the longest sequence ending at box i
-    
-    for i in range(1, n):
+def box_packing(n, boxes):
+    # Sort the boxes by dimensions (sort each box's dimensions first)
+    sorted_boxes = [tuple(sorted(box)) for box in boxes]
+    sorted_boxes.sort()
+
+    # DP array to store the max number of boxes that can be packed up to the i-th box
+    dp = [1] * n
+
+    for i in range(n):
         for j in range(i):
-            if (boxes[i][0] > boxes[j][0] and
-                boxes[i][1] > boxes[j][1] and
-                boxes[i][2] > boxes[j][2]):
+            # If the i-th box can be packed inside the j-th box
+            if can_pack(sorted_boxes[j], sorted_boxes[i]):
                 dp[i] = max(dp[i], dp[j] + 1)
 
-    # The result is the maximum value in dp
+    # The result will be the maximum value in the dp array
     return max(dp)
